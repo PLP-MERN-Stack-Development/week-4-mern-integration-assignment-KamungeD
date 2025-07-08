@@ -40,11 +40,11 @@ export default function PostList() {
   // Optimistic delete handler
   const handleDelete = async (id) => {
     const oldPosts = posts;
-    setPosts(posts.filter(post => post._id !== id));
+    setPosts(posts.filter(post => post._id !== id)); // Remove from UI immediately
     try {
       await deletePost(id);
     } catch {
-      setPosts(oldPosts);
+      setPosts(oldPosts); // Revert if server fails
       alert("Failed to delete post.");
     }
   };

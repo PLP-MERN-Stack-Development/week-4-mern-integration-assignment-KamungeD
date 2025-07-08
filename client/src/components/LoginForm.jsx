@@ -4,6 +4,7 @@ import { authService } from "../services/api";
 
 export default function LoginForm() {
   const [form, setForm] = useState({ username: "", password: "" });
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -30,14 +31,33 @@ export default function LoginForm() {
         placeholder="Username"
         required
       />
-      <input
-        name="password"
-        type="password"
-        value={form.password}
-        onChange={handleChange}
-        placeholder="Password"
-        required
-      />
+      <div style={{ position: "relative" }}>
+        <input
+          name="password"
+          type={showPassword ? "text" : "password"}
+          value={form.password}
+          onChange={handleChange}
+          placeholder="Password"
+          required
+        />
+        <button
+          type="button"
+          onClick={() => setShowPassword((v) => !v)}
+          style={{
+            position: "absolute",
+            right: 0,
+            top: 0,
+            height: "100%",
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            padding: "0 8px"
+          }}
+          tabIndex={-1}
+        >
+          {showPassword ? "Hide" : "Show"}
+        </button>
+      </div>
       <button type="submit">Login</button>
       {error && <div style={{ color: "red" }}>{error}</div>}
     </form>

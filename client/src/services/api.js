@@ -136,4 +136,9 @@ export const authService = {
   },
 };
 
+api.getCategories = async () => {
+  const res = await api.get('/categories');
+  return res.data;
+};
+
 export default api;

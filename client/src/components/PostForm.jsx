@@ -1,15 +1,19 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useApi from "../hooks/useApi";
-import api from "../services/api";
+import { postService, categoryService } from "../services/api"; // <-- use postService
 
 export default function PostForm({ editMode }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
-  const [fetchCategories] = useApi(api.getCategories);
-  const [fetchPost] = useApi(api.getPost);
-  const [savePost, { loading, error }] = useApi(editMode ? api.updatePost : api.createPost);
+  const [fetchCategories] = useApi(() => categoryService.getAllCategories());
+  const [fetchPost] = useApi((id) => postService.getPost(id));
+  const [savePost, { loading, error }] = useApi(
+    editMode
+      ? (id, data) => postService.updatePost(id, data)
+      : (data) => postService.createPost(data)
+  );
 
   const [form, setForm] = useState({
     title: "",
@@ -77,16 +81,16 @@ export default function PostForm({ editMode }) {
       {formError && <div style={{ color: "red" }}>{formError}</div>}
       {error && <div style={{ color: "red" }}>{error}</div>}
       <div>
-        <label>Title:</label>
-        <input name="title" value={form.title} onChange={handleChange} required />
+        <label htmlFor="title">Title:</label>
+        <input id="title" name="title" value={form.title} onChange={handleChange} required />
       </div>
       <div>
-        <label>Content:</label>
-        <textarea name="content" value={form.content} onChange={handleChange} required />
+        <label htmlFor="content">Content:</label>
+        <textarea id="content" name="content" value={form.content} onChange={handleChange} required />
       </div>
       <div>
-        <label>Category:</label>
-        <select name="category" value={form.category} onChange={handleChange} required>
+        <label htmlFor="category">Category:</label>
+        <select id="category" name="category" value={form.category} onChange={handleChange} required>
           <option value="">Select...</option>
           {categories.map((cat) => (
             <option key={cat._id} value={cat._id}>
@@ -96,8 +100,8 @@ export default function PostForm({ editMode }) {
         </select>
       </div>
       <div>
-        <label>Featured Image:</label>
-        <input type="file" name="featuredImage" accept="image/*" onChange={handleChange} />
+        <label htmlFor="featuredImage">Featured Image:</label>
+        <input id="featuredImage" type="file" name="featuredImage" accept="image/*" onChange={handleChange} />
       </div>
       <button type="submit" disabled={loading}>
         {loading ? "Saving..." : editMode ? "Update" : "Create"}

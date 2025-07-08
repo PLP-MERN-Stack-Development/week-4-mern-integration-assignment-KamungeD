@@ -1,5 +1,4 @@
 import { useState } from "react";
-import api from "../services/api";
 
 // Generic API hook for GET/POST/PUT/DELETE
 export default function useApi(requestFn) {
@@ -12,7 +11,8 @@ export default function useApi(requestFn) {
     try {
       const res = await requestFn(...args);
       setLoading(false);
-      return res.data;
+      // If the response is from axios, return res.data; otherwise, return res
+      return res && res.data !== undefined ? res.data : res;
     } catch (err) {
       setError(err.response?.data?.error || err.message);
       setLoading(false);
