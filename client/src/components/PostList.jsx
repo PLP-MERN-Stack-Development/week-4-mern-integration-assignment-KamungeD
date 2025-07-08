@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import useApi from "../hooks/useApi";
-import api from "../services/api";
+import { postService } from "../services/api";
 
 export default function PostList() {
   const [posts, setPosts] = useState([]);
@@ -10,16 +10,18 @@ export default function PostList() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
   const [categories, setCategories] = useState([]);
-  const [fetchPosts, { loading, error }] = useApi(async (pageNum = 1, searchVal = "", categoryVal = "") => {
-    const res = await api.getPosts(pageNum, 5, searchVal, categoryVal);
-    setPages(res.pages || 1);
-    return res.posts || [];
-  });
-  const [deletePost, { loading: deleting, error: deleteError }] = useApi(api.deletePost);
+  const [fetchPosts, { loading, error }] = useApi(
+    async (pageNum = 1, searchVal = "", categoryVal = "") => {
+      const res = await postService.getAllPosts(pageNum, 5, searchVal, categoryVal);
+      setPages(res.pages || 1);
+      return res.posts || [];
+    }
+  );
+  const [deletePost, { loading: deleting, error: deleteError }] = useApi(postService.deletePost);
 
   // Fetch categories for filter dropdown
   useEffect(() => {
-    api.getCategories().then(res => setCategories(res.data || res));
+    postService.getCategories().then(res => setCategories(res.data || res));
   }, []);
 
   // Fetch posts when page, search, or category changes

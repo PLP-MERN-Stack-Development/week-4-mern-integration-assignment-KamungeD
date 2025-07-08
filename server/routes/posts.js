@@ -23,6 +23,13 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
+// Slugify function
+const slugify = (title) =>
+  title
+    .toLowerCase()
+    .replace(/[^\w ]+/g, '')
+    .replace(/ +/g, '-');
+
 // Get all posts (with pagination and search)
 router.get('/', async (req, res) => {
   const page = parseInt(req.query.page) || 1;
@@ -82,10 +89,12 @@ router.post('/', auth, upload.single('featuredImage'), postValidation, async (re
       category: req.body.category,
       author: req.user.id,
       featuredImage: req.file ? `/uploads/${req.file.filename}` : undefined,
+      slug: slugify(req.body.title), // <-- TEMP SLUG MANUALLY SET
     });
     await post.save();
     res.status(201).json(post);
   } catch (err) {
+    console.error(err); // <--- Add this line to see the error in your terminal
     res.status(500).json({ error: err.message });
   }
 });
