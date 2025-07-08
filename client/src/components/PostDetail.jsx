@@ -9,8 +9,8 @@ export default function PostDetail() {
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState([]);
   const [commentText, setCommentText] = useState("");
-  const [fetchPost, { loading, error }] = useApi(api.getPost);
-  const [deletePost, { loading: deleting, error: deleteError }] = useApi(api.deletePost);
+  const [fetchPost, { loading, error }] = useApi((id) => postService.getPost(id));
+  const [deletePost, { loading: deleting, error: deleteError }] = useApi(postService.deletePost);
   const [commentLoading, setCommentLoading] = useState(false);
 
   useEffect(() => {
