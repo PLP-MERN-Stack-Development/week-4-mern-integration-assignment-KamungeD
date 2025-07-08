@@ -89,12 +89,13 @@ router.post('/', auth, upload.single('featuredImage'), postValidation, async (re
       category: req.body.category,
       author: req.user.id,
       featuredImage: req.file ? `/uploads/${req.file.filename}` : undefined,
+      isPublished: req.body.isPublished === "true", // <-- Ensure isPublished is a boolean
       slug: slugify(req.body.title), // <-- TEMP SLUG MANUALLY SET
     });
     await post.save();
     res.status(201).json(post);
   } catch (err) {
-    console.error(err); // <--- Add this line to see the error in your terminal
+    console.error(err); // <--- This line shows the error in the terminal
     res.status(500).json({ error: err.message });
   }
 });

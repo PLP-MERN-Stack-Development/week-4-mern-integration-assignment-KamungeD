@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import useApi from "../hooks/useApi";
-import { postService } from "../services/api";
+import { postService, categoryService } from "../services/api";
 
 export default function PostList() {
   const [posts, setPosts] = useState([]);
@@ -21,12 +21,19 @@ export default function PostList() {
 
   // Fetch categories for filter dropdown
   useEffect(() => {
-    postService.getCategories().then(res => setCategories(res.data || res));
+    categoryService.getAllCategories().then(res => setCategories(res.data || res));
   }, []);
 
   // Fetch posts when page, search, or category changes
   useEffect(() => {
-    fetchPosts(page, search, category).then(setPosts).catch(() => {});
+    fetchPosts(page, search, category)
+      .then(data => {
+        console.log("Fetched posts:", data);
+        setPosts(data);
+      })
+      .catch((err) => {
+        console.error("Error fetching posts:", err);
+      });
   }, [page, search, category]);
 
   const handleSearchChange = e => {

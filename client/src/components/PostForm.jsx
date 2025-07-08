@@ -64,6 +64,7 @@ export default function PostForm({ editMode }) {
     formData.append("content", form.content);
     formData.append("category", form.category);
     if (form.featuredImage) formData.append("featuredImage", form.featuredImage);
+    formData.append("isPublished", "true");
 
     try {
       if (editMode) {

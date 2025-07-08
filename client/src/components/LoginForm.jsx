@@ -12,10 +12,17 @@ export default function LoginForm() {
 
   const handleSubmit = async e => {
     e.preventDefault();
+    setError("");
     try {
       const res = await authService.login(form);
-      localStorage.setItem("token", res.data.token);
-      navigate("/");
+      // Accept both res.token and res.data.token for flexibility
+      const token = res.token || res.data?.token;
+      if (token) {
+        localStorage.setItem("token", token);
+        navigate("/");
+      } else {
+        setError("Login failed");
+      }
     } catch (err) {
       setError(err.response?.data?.error || "Login failed");
     }
